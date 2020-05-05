@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录日志</title>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/static/js/bootstrap.js"></script>
+</head><style>
+    .px10{
+        height:10px;
+    }
+</style>
+<body >
+    <div class="container">
+    <div class="px10"></div>
+    <div><a href="{:url('admin/index/index')}" class="btn btn-info" style="width:120px">&lt; 返回主页</a></div>
+    <div class="px10"></div>
+    <div class="px10"></div>
+    <div class="px10"></div>
+    
+    <div>
+        <table class="table table-striped" style="text-align:center;">
+            <tr>
+                <th scope="col">用户名</th>
+                <th scope="col">登录时间</th>
+            </tr>
+            {foreach $data as $k => $v}
+            <tr>
+                <td>{$v.username}</td>
+                <td>{$v.logintime|date='Y--m-d H:i:s',###}</td>
+            </tr>
+            {/foreach}
+
+        </table>
+
+        
+
+    </div>
+</body>
+</html>

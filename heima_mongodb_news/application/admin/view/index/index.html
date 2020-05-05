@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻主页</title>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/static/js/bootstrap.js"></script>
+</head>
+<style>
+    table{
+        text-align: left;
+        width:1000px;
+    }
+    .px10{
+        height:10px;
+    }
+    .nav-item{
+        height:130px;
+        line-height:100px;
+    }
+    .news_title{
+        width:300px;
+        overflow: hidden;
+        white-space: nowrap; 
+        text-overflow:ellipsis; 
+
+        /* overflow: hidden;white-space: nowrap; text-overflow:ellipsis;  */
+    }
+</style>
+<body>
+<div class="container">
+
+        <ul class="nav justify-content-left" style="list-style:none">
+        <li class="nav-item">
+            <img src="{$head}" οnerrοr="javascript:this.src='/uploads/default.jpg';" alt="pic" width="50%" /></li>
+
+        <li class="nav-item">
+            <a href="{:url('admin/index/create')}" class="nav-link">添加新闻</a></li>
+
+        <li class="nav-item">
+            <a href="http://mongodbvue.fuzzbear.club/" class="nav-link">进入前端</a></li>
+
+        <li class="nav-item">
+            <a href="{:url('admin/index/newpassview')}" class="nav-link">修改密码</a></li>
+
+        <li class="nav-item">
+            <a href="{:url('admin/index/loginlog')}" class="nav-link">查看登录日志</a></li>
+
+        <li class="nav-item">
+            <a href="{:url('admin/index/headview')}" class="nav-link">上传头像</a></li>
+
+        <li class="nav-item">
+            <a href="{:url('admin/index/hot')}" class="nav-link">热门新闻</a></li>
+        </ul>
+
+
+        <form action="{:url('admin/index/index')}" method="GET">
+            <!-- <label for="inputEmail3" class="col-sm-2 col-form-label">搜索标题：</label> -->
+            <!-- <div class="col-sm-8"> -->
+            <input type="text" name="search" class="form-control" style="width:200px;float:left">
+            <!-- </div> -->
+            <input type="submit" value="搜索标题" class="btn btn-info">
+        </form>
+        <table class="table table-striped" style="text-align:center;">
+            <div class="px10"></div>
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">标题</th>
+                <th scope="col">添加时间</th>
+                <th scope="col">访问量</th>
+                <th scope="col">作者</th>
+                <th scope="col">操作</th>
+                <th scope="col"><a href="javascript:;" onclick="delchk()">选中删除</a></th>
+            </tr>
+            {if condition="$data!=[]"}
+            {foreach $data as $k => $v}
+            <tr>
+                <td>{$k+1}</td>
+                <!-- <td>{$v._id}</td> -->
+                <td style="width:300px">
+                    <div class="news_title">
+                    <a href="{:url('admin/index/read',['_id'=>$v._id])}">{$v.title}</a>
+                    </div>
+                </td>
+                <td>{$v.ctime|date="Y-m-d H:i:s",###}</td>
+                <td>{$v.click}</td>
+                <td>{$v.author}</td>
+                <td>
+                    <a href="{:url('admin/index/edit',['_id'=>$v._id])}">修改</a>
+                    <a href="javascript:void(0);" onclick="del('{:url("admin/index/delete",["_id"=>$v._id])}',this)">删除</a>
+                </td>
+                <td><input type="checkbox" name="chk" value="{$v._id}"></td>
+            </tr>
+            {/foreach}
+            {/if}
+
+        </table>
+        <div>
+            {$fpage}
+        </div>
+</div>
+
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script>
+        function del(url,obj) {
+            if(confirm('确认删除')){
+                $.get(url,function(ret){
+                    console.log(ret);
+                    // $(obj).parents('tr').remove();
+                    // alert(ret.msg);
+                    window.location.reload();
+                })
+            }
+        }
+
+        function delchk(){
+            if(confirm('确认删除')){
+            var str = '';
+
+            $('input[name=chk]:checked').each(function (k,v){
+                // arr.push($('input[name=chk]:checked').val());
+                // console.log(k)
+                tag = $('input[name=chk]:checked')[k];
+                // console.log($(tag).val());
+                str += $(tag).val() + ',';
+                // $(k).parent().parent().remove();
+            })
+            // console.log(str);
+            // return
+            // console.log(arr);
+            str=str.substring(0,str.length-1);
+            // console.log(str);
+            $.post('{:url("admin/index/deletecheck")}',{'str':str},function(ret){
+                window.location.reload()
+            })
+        }
+        }
+    </script>
+</body>
+</html>

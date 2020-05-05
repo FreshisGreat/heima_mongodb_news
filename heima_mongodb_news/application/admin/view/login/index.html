@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台登录</title>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/static/js/bootstrap.js"></script>
+</head>
+<style>
+    a{
+        color:#333;
+        font-weight: 900;
+        text-decoration: none;
+    }
+    .px10{
+        height:10px;
+    }
+</style>
+<body>
+    <div class="container text-center border" style="margin-top:50px;padding-top:50px;padding-bottom:50px;width:400px" >
+    <h3 class="form-signin-heading">后台登录</h3>
+    <div class="px10"></div>
+    <form method="POST" action="{:url('admin/Login/login')}" class="form-signin">
+        <div>
+            <label>
+                <input style="width:300px" type="text" id='username' name="username" class="form-control" placeholder="这里输入登录名" required value="admin">
+            </label>
+        </div>
+        <div class="px10"></div>
+
+        <div>
+            <label>
+                <input style="width:300px" type="password" id="password" name="password" class="form-control" placeholder="这里输入密码" onfocus="$('#captcha')[0].src='{:captcha_src('login')}' + '?_=' + Math.random()" value="123123">
+            </label>
+        </div>
+        <div class="px10"></div>
+
+        <img class="pull-right" src="{:captcha_src('login')}" alt="captcha" id="captcha" onclick="this.src='{:captcha_src('login')}' + '?_=' + Math.random()" ><br><br>
+        <div><label>
+            <input style="width:300px" type="text" onfocus="this.value=''" id='verify' class="pull-left form-control" name="code" placeholder="这里输入验证码" ></label> </div>
+        <br>
+        <div>
+            <input type="submit" value="登  录"  class="btn btn-info" style="width:120px;">
+        </div>
+    </form>
+    <br>
+    <a href="http://heimavue.fuzzbear.club/">进入前端</a>
+    </div>
+</body>
+<script src='/static/js/jquery-3.3.1.min.js'></script>
+<script type="text/javascript">
+
+    $(function(){
+
+
+        $('.login-btn').on('click',function(evt){
+            if($('#username').val() == ''){
+                $('.msg').html('登录名不能为空');
+                return;
+            }
+            if($('#password').val() == ''){
+                $('.msg').html('密码不能为空');
+                return;
+            }
+            if($('#verify').val() == ''){
+                $('.msg').html('验证码不能为空');
+                return;
+            }
+            $('form').submit();
+
+        });
+
+    });
+</script>
+</html>

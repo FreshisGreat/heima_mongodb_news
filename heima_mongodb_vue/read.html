@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻详情</title>
+</head>
+<style>
+    
+    *{
+        font-size:18px;
+        margin:0;
+        padding:0;
+    }
+    #app{
+        width:1000px;
+        margin:0 auto;
+    }
+    .h1{
+        height:80px;
+        line-height:80px;
+        font-size:24px;
+    }
+    .h3{
+        height:40px;
+        line-height:40px;
+        font-size:20px;
+    }
+    hr{
+        margin-bottom:20px;
+    }
+    .p{
+        text-indent:2em;
+        line-height:32px;
+    }
+    a{
+        color:#333;
+        font-weight: 900;
+        text-decoration: none;
+    }
+    a:hover{
+        color:#ff0000;
+    }
+    [v-cloak] { display: none } 
+</style>
+<body>
+    <div id="app" v-cloak>
+        <h1 class="h1">{{n.title}}</h1>
+        <h3 class="h3">{{n.desn}} - {{n.author}}</h3>
+        <hr>
+        <p class="p">
+            {{n.content}}
+        </p>
+        <br>
+        <a href="http://heimavue.fuzzbear.club/index.html">返回主页</a>
+    </div>
+</body>
+
+<script src="/js/vue.js"></script>
+<script src="/js/axios.js"></script>
+
+<script>
+    function geturlparam(name) {   
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象  
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if( r != null ) return decodeURI( r[2] ); return null;   
+    }
+    var app = new Vue({
+        el: '#app',
+        data: {
+            n:[]
+        },
+        mounted() {
+            var id = geturlparam("id");
+            console.log(id);
+            axios.get('http://heimanews.fuzzbear.club/api/news/read?id='+id).then(ret => {
+                // console.log(ret);
+                this.n = (ret.data.data);
+            })
+
+        },
+    })
+</script>
+</html>

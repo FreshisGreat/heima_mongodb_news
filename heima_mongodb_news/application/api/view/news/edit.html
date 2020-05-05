@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改新闻 - api</title>
+</head>
+<style>
+    *{
+        font-size:18px;
+        margin:0;
+        padding:0;
+    }
+    .main{
+        width:1000px;
+        margin-left:20px;
+
+    }
+    h1{
+        font-size:24px;
+        height:50px;
+        line-height:50px;
+    }
+    a{
+        color:#333;
+        font-weight: 900;
+        text-decoration: none;
+    }
+    a:hover{
+        color:#ff0000;
+    }
+</style>
+<body>
+    <div class="main">
+    <form action="{:url('api/news/update')}" method="POST">
+        <h1>修改新闻</h1>
+        <div>
+            <label>
+                <input type="hidden" name="id" value="{$one.id}">
+                标题：<input type="text" name="title" value="{$one.title}">
+            </label>
+        </div><br>
+        <div>
+            <label>
+                描述：<input type="text" name="desn" value="{$one.desn}">
+            </label>
+        </div><br>
+        <div>
+            <label>
+                作者：<input type="text" name="author" value="{$one.author}">
+            </label>
+        </div><br>
+        <div>
+            <label>
+                内容：<textarea name="content" id="" cols="30" rows="10">{$one.content}</textarea>
+            </label>
+        </div><br>
+        <div>
+            <input type="submit" value="修改新闻">
+        </div>
+    </form>
+    <br>
+    <a href="http://heimavue.fuzzbear.club/">取消修改</a>
+    </div>  
+</body>
+</html>

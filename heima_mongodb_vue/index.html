@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue前台展示</title>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <link href="/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/js/bootstrap.js"></script>
+</head>
+<style>
+    *{
+        font-size:18px;
+        margin:0;
+        padding:0;
+    }
+    #app{
+        width:1000px;
+        margin:0 auto;
+    }
+    .header{
+        height:50px;
+        line-height:50px;
+    }
+    table{
+        text-align: left;
+        width: 1000px;
+    }
+    a{
+        color:#333;
+        font-weight: 900;
+        text-decoration: none;
+    }
+    a:hover{
+        color:#ff0000;
+    }
+    .title{
+        text-align:left;
+    }
+    tr{
+        line-height:30px;
+    }
+    .px10{
+        height:10px;
+    }
+    .nav-item{
+        height:130px;
+        line-height:100px;
+    }
+    .news_title{
+        color:#007bff;
+        width:500px;
+        overflow: hidden;
+        white-space: nowrap; 
+        text-overflow:ellipsis; 
+    }
+
+    [v-cloak] { display: none } 
+</style>
+<body>
+<div id="app" class="formflush container" v-cloak>
+    <div class="header">
+    <ul class="nav justify-content-left" style="list-style:none">
+        <li class="nav-item">
+            <span class="display-4">黑马新闻</span>
+        </li>
+        &nbsp;
+        <li class="nav-item">
+        <a href="http://mongodb.fuzzbear.club/admin/index/index.html" class="nav-link">进入后端</a>
+        </li>
+        <li class="nav-item">
+        <span v-if="islogin==false">
+        <a href="http://mongodbvue.fuzzbear.club/login.html" class="nav-link">登录</a>
+        </span>
+        <span v-if="islogin==true">
+            <a href="javascript:;" @click="logout()" class="nav-link">登出</a>
+        </span>
+        </li>
+    </ul>
+    </div>
+<br> <br>
+    <!-- <form action="{:url('admin/index/index')}" method="GET">
+        标题搜索：<input type="text" name="search">
+        <input type="submit" value="搜索">
+    </form> -->
+    <div>
+        <table class="table" style="text-align:left;">
+            <div class="px10"></div>
+            <tr class="title">
+                <!-- <th>ID</th> -->
+                <th scope="col">标题</th>
+                <th scope="col" style="width:160px">作者</th>
+                <!-- <th>操作</th> -->
+            </tr>
+            <router-view name="newslist"></router-view>
+            <tr v-for="v in news">
+                <!-- <td>{{}}</td> -->
+                <!-- <td><a href="javascript:void(0);" @click="read(v.id)">{{v.title}}</a></td> -->
+                <!-- router-link相当于a的作用，导航切换功能 -->
+                <td>
+                <div class="news_title">
+                    <router-link :to="{name:'read',params:{id:v.id}}">{{v.title}}</router-link>
+                </div>
+                </td>
+                <td>{{v.author}}</td>
+                <!-- <td>
+                    <a href="javascript:void(0);" @click="edit(v.id)">修改</a>
+                    <a href="javascript:void(0);" @click="del(v.id,$event)" >删除</a>
+                </td> -->
+            </tr>
+        </table>
+        <div v-html="fpage">
+        </div>
+    </div><br>
+    <hr><br>
+    <h3>新闻内容显示</h3><br>
+    <!-- 路由组件显示的容器 -->
+    <router-view></router-view>
+    <div class="px10"></div><br>
+</div>
+</body>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/axios.js"></script>
+<script src="/js/vue-router.js"></script>
+<!-- 定义子组件的html -->
+<script type="text/x-template" id="read">
+    <div>
+        <div v-html="news.content">
+        </div>
+        <h3>评论区：</h3>
+        <br>
+        <div v-for="v in comments">
+            <!-- <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">{{v.username}}：</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" v-bind:value="v.comment" disabled>
+            </div> -->
+            <!-- 用户：{{v.username}}
+            评论内容：{{v.comment}} -->
+            <div class="row">
+                <div  class="col-1"><span style="font-weight:900;color:#555;">{{v.username}}：</span></div>
+                <div  class="col-11">{{v.comment}}</div>
+            </div>
+            <!-- <br> -->
+            <div class="px10"></div>
+            <div class="px10"></div>
+        </div>
+        <div v-if="islogin==true">
+        <!-- <div>评论内容：</div>   -->
+        <form action="">
+            <!-- <input type="text" v-bind:value="news_id"> -->
+            <!-- <input type="text" v-bind:value="username"> -->
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">评论内容</span>
+                </div>
+                <input type="hidden" name="_id" value="{$one._id}">
+                <textarea class="form-control" aria-label="With textarea" name="comment" id="comment" cols="100" rows="10"></textarea>
+            </div>
+            <!-- <textarea name="comment" id="comment" cols="30" rows="10" >
+                
+            </textarea> -->
+        </form>
+        <br>
+        <button @click="upcomment" class="btn btn-info" style="width:120px">提交评论</button>
+        <br>
+        </div>
+        <a href="http://mongodbvue.fuzzbear.club/login.html" v-if="islogin==false">登录后评论</a>
+    </div>
+    
+</script>
+<script>
+
+    //点击页码跳转
+    function pagejump(obj){
+        url = $(obj).attr('url')
+        // console.log(url);
+        $.get('http://mongodb.fuzzbear.club'+url,function(ret){
+            // console.log(ret);
+            // console.log(ret.ret[0]);
+
+            app.news = ret.ret[0];
+            for(var k = 0;k<app.news.length;k++){
+                    app.news[k].id = app.news[k]._id.$oid;
+             }
+            app.fpage = ret.ret[1];
+            // console.log(app.news);
+            // console.log(app.fpage);
+        })
+    }
+</script>
+<script>
+    
+    var Read = {
+        template: '#read',
+        data() {
+            return{
+                id:0,
+                news:[],
+                comments:[],
+                news_id:'',
+                username:'',
+                islogin:false,
+            }
+        },
+        // data:{
+        //     id:0,
+        //     info:[]
+        // },
+        async mounted(){
+            // console.log('mounted')
+            await this.getData();
+            // console.log(this.comments)
+            if(localStorage.getItem("username")){
+                this.islogin = true;
+                this.username = localStorage.getItem("username")
+            }
+            // console.log(this.islogin);
+            // console.log(this.news_id)
+        },
+        watch: {
+            $route(newval,oldval){
+                // console.log('watch')
+                this.getData();
+            }
+        },
+        methods: {
+        // 根据id获取最新新闻
+            async getData(){
+                $.ajaxSettings.async = false; 
+                // 新闻id
+                this.id = this.$route.params.id;
+                console.log(this.id);
+
+                await axios.get('http://mongodb.fuzzbear.club/api/index/read?id=' + this.id).then(ret => {
+                    // console.log(ret.data.ret);
+                    this.news_id = ret.data.ret[0]._id.$oid
+                    // console.log(this.news_id)
+                    this.news = ret.data.ret[0]
+                    this.comments = ret.data.ret[1]
+                    // console.log(this.comments);
+                    // this.info = ret.data.data
+
+                })
+
+                // console.log(this.news_id)
+            },
+            upcomment(){
+                // console.log(111);
+                comment = $('#comment').val()
+                // console.log(comment)
+                username = this.username
+                // console.log(username)
+                news_id = this.news_id
+
+                var arr = {};
+                arr.username = username
+                arr.news_id = news_id
+                arr.comment = comment
+                axios.post('http://mongodb.fuzzbear.club/api/index/addcomment',arr).then(ret => {
+                    console.log(ret.data.ret.code)
+                    if(ret.data.ret.code==0){
+                        alert(ret.data.ret.msg)
+                    }
+                    this.getData()
+                })
+                $('#comment').val('')
+            }
+
+        }
+    }
+    //设置url路由
+    const routes = [
+        {path:'/read?id=:id',component:Read,name:'read'}
+    ]
+    //引入路由
+    const router = new VueRouter({
+      routes
+    })
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            news:[],
+            fpage:'',
+            islogin:false,
+        },
+        mounted() {
+            $.ajaxSettings.async = false; 
+            if(localStorage.getItem("username")){
+                this.islogin = true;
+            }
+            // console.log(this.islogin);
+            axios.get('http://mongodb.fuzzbear.club/api/index/index').then(ret => {
+                // console.log(ret)
+                this.news = ret.data.ret[0];
+
+                // console.log(this.news.length);
+                // console.log(this.news[0]._id.$oid)
+                for(var k = 0;k<this.news.length;k++){
+                    this.news[k].id = this.news[k]._id.$oid;
+
+                }
+                // console.log(this.news);
+                // var test = this.news[0];
+                // console.log(test._id.$oid);
+                // console.log(this.news);
+                this.fpage = ret.data.ret[1];
+                // console.log(ret.data.ret.data);
+                
+            })
+        },
+        router,
+        methods: {
+            logout:function(){
+                // console.log(111);
+                localStorage.removeItem("username")
+                this.islogin = false
+            },
+            pagejump:function(){
+                console.log(111);
+            }
+        },
+
+    })
+
+
+</script>
+
+</html>

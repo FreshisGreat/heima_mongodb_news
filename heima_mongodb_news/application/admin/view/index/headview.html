@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传头像</title>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/static/js/bootstrap.js"></script>
+</head><style>
+    .px10{
+        height:10px;
+    }
+</style>
+<body >
+    <div class="container">
+    <div class="px10"></div>
+    <div><a href="{:url('admin/index/index')}" class="btn btn-info" style="width:120px">&lt; 返回主页</a></div>
+    <div class="px10"></div>
+    <div class="px10"></div>
+    <div class="px10"></div>
+    <form action="{:url('admin/index/headupload')}" method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="head" value="选择图片" class="form-control-file" id="exampleFormControlFile1">
+        <br>
+        <input type="submit" value="上传" class="btn btn-info" style="width:120px">
+    </form>
+</body>
+</html>

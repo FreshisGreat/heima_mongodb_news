@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新闻详情</title>
+    <script src="/static/js/jquery-3.3.1.min.js"></script>
+    <link href="/static/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <script src="/static/js/bootstrap.js"></script>
+</head>
+<style>
+    .px10{
+        height:10px;
+    }
+</style>
+<body>
+    <div class="container">
+    <div class="px10"></div>
+    <div><a href="javascript:;" onclick="back()" class="btn btn-info" style="width:120px">&lt; 返回主页</a></div>
+    <!-- <div><a href="{:url('admin/index/index')}" class="btn btn-info" style="width:120px">&lt; 返回主页</a></div> -->
+    <div class="px10"></div>
+    <h1 class="display-4">{$one.title}</h3>
+    <h3 style="text-align:right;">{$one.desn} - {$one.author}</h3>
+    <p>
+        {$one.content}
+    </p>
+    <br>
+    <br>
+    <h3>评论区：</h3>
+    <br>
+    <table class="table table-striped" style="text-align:center;">
+        <tr>
+            <th style="width:200px;">用户名</th>
+            <th>评论内容</th>
+            <th style="width:200px;">操作</th>
+        </tr>
+    {foreach $comments as $k => $v}
+        <tr>
+            <td style="vertical-align: middle;">{$v.username}</td>
+            <td style="vertical-align: middle;">{$v.comment}</td>
+            <td style="vertical-align: middle;">
+                <a href="{:url('admin/index/delcomment',['_id'=>$v._id,'news_id'=>$v.news_id])}"  class="btn btn-danger">删除</a>
+                <!-- <a href="{:url('admin/index/repcomment',['_id'=>$v._id,'news_id'=>$v.news_id])}">回复</a> -->
+                <!-- <a href="javascript:;" onclick="dialog()">回复</a> -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">回复</button>
+                <!-- <textarea name="dialog" id="dialog" cols="30" rows="10"></textarea> -->
+            </td>
+            <!-- dialog -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">评论回复</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    <form action="{:url('admin/index/repcomment',['news_id'=>$v.news_id])}" method="POST">
+                        <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">回复给:</label>
+                        <input type="text" class="form-control" id="recipient-name" name="purpose" value="@{$v.username}">
+                        </div>
+                        <div class="form-group">
+                        <label for="message-text" class="col-form-label">回复内容：</label>
+                        <textarea class="form-control" id="message-text"  name="repcomment"></textarea>
+                        </div>
+                    
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <input type="submit" class="btn btn-primary" value="回复">
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </tr>
+    {/foreach}
+    </table>
+
+    <form action="{:url('admin/index/addcomment')}" method="POST">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">评论内容</span>
+        </div>
+        <input type="hidden" name="_id" value="{$one._id}">
+        <textarea class="form-control" aria-label="With textarea" name="comment" id="comment" cols="100" rows="10"></textarea>
+    </div>
+    <div class="px10"></div>
+    <div style="text-align:center">
+        <input type="submit" value="添加评论" class="btn btn-info" style="width:120px">
+    </div><br>
+    </form>
+</div>
+</body>
+<script>
+    function back(){
+        history.back(-1);
+    }
+</script>
+</html>
